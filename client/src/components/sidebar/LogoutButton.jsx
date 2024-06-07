@@ -6,14 +6,12 @@ const LogoutButton = () => {
 
   const {loading, logout} = useLogout()
   return (
-    <div>
-      <div className='mt-auto'>
+    <div  className='mt-auto'>
         {
           !loading ? (
             <TbLogout2 className='w-6 h-6 text-white cursore-pointer mt-3' onClick={logout} />
           ) : <span className='loading loading-spinner'></span>
         }
-      </div>
     </div>
   );
 }
