@@ -1,21 +1,38 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Message from "./Message";
-import useGetMessages from "../../hooks/useGetMessages";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
+import useListenMessages from "../../hooks/useListenMessages";
+import { useDispatch, useSelector } from "react-redux";
+import { getMessage } from "../../actions/messageAction";
+
 
 const Messages = () => {
-  const { messages, loading } = useGetMessages();
+  const [loading, setLoading] = useState(null);
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.sliceA.selectedUserToMessage)
+  const messages = useSelector((state) => state.sliceA.messages)
+
+  useListenMessages();
   const lastMessageRef = useRef();
+
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getMessage(user._id));
+    setLoading(false);
+  },[user?._id])
+
   useEffect(() => {
     setTimeout(() => {
       lastMessageRef.current?.scrollIntoView({behavior: "smooth"})
     }, 100)
   },[messages])
+
+
   return (
-    <div className="px-4 overflow-auto">
-      {!loading && messages.length > 0 && messages.map((message) => (
+    <div className="pl-1 overflow-auto">
+      {!loading && messages.length > 0 && messages.map((message, index) => (
         <div key={message._id} ref={lastMessageRef}>
-          <Message message={message} />
+          <Message message={message} nextMessage={messages[index+1]} />
         </div>
       ))}
       {loading && [...Array(5)].map((_, idx) => <MessageSkeleton key={idx} />)}

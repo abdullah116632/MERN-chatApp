@@ -1,9 +1,29 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Conversation from './Conversation';
-import useGetConversations from '../../hooks/useGetConversation';
+import { fetchUsers } from '../../api';
+import toast from 'react-hot-toast';
 
 const Conversations = () => {
-  const {loading, conversations} = useGetConversations()
+
+  const [loading, setLoading] = useState(false)
+  const [conversations, setConversations] = useState([])
+
+  useEffect(() => {
+    const getUsers = async () => {
+      setLoading(true);
+      try{
+        const {data} = await fetchUsers();
+        setConversations(data);
+        setLoading(false)
+      }catch(error){
+        toast.error(error.response.data.message)
+        setLoading(false)
+      }
+    }
+
+    getUsers();
+  },[])
+
 
   return (
     <div className='py-2 flex flex-col overflow-auto'>

@@ -1,0 +1,7 @@
+export const SEND_MESSAGE = "SEND_MESSAGE";
+export const SIGNUP_USER = "SIGNUP_USER";
+export const LOGIN_USER = "LOGIN_USER";
+export const LOGOUT_USER = "LOGOUT_USER";
+export const SELECT_USER_TO_MESSAGE = "SELECT_USER_TO_MESSAGE";
+export const GET_MESSAGES = "GET_MESSAGES";
+export const GET_REAL_TIME_MESSAGE = "GET_REAL_TIME_MESSAGE";

@@ -4,10 +4,15 @@ import './App.css'
 import Home from './pages/home/Home'
 import Login from "./pages/login/Login"
 import SignUp from "./pages/signup/SignUp"
-import { useAuthContext } from './context/AuthContext'
+import { useSelector } from 'react-redux'
+// import { useAuthContext } from './context/AuthContext'
+
+
 
 function App() {
-  const {authUser} = useAuthContext()
+  // const {authUser} = useAuthContext()
+  const authUser = useSelector((state) => state.sliceA.authUser)
+
   return (
     <div className='p-4 h-screen flex items-center justify-center'>
       <Routes>

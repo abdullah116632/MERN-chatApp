@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import useLogin from "../../hooks/useLogin";
+// import useLogin from "../../hooks/useLogin";
+import {useDispatch} from "react-redux"
+import { login } from "../../actions/messageAction";
 
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const {loading, login} = useLogin()
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(username, password)
+    setLoading(true);
+    dispatch(login(username, password));
+    setLoading(false)
   }
 
   return (

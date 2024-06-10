@@ -1,19 +1,30 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IoIosSend } from "react-icons/io";
-import useSendMessage from "../../hooks/useSendMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { sendMessage } from "../../actions/messageAction";
+import toast from "react-hot-toast";
+
 
 const MessageInput = () => {
   const [message, setMessage] = useState("");
-  const {loading, sendMessage} = useSendMessage()
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const receiverId = useSelector((state) => state.sliceA.selectedUserToMessage._id)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if(!message) return;
-    
-    await sendMessage(message);
-    console.log("test")
-    setMessage("");
+    try{
+      setLoading(true)
+      dispatch(sendMessage(message, receiverId))
+      setLoading(false)
+      setMessage("");
+    }catch(err){
+      toast.error(err.response.data.error);
+      setLoading(false);
+      setMessage("");
+    }
   };
 
   return (
