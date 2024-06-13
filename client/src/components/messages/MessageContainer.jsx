@@ -11,7 +11,7 @@ const MessageContainer = () => {
 
   return (
     <div className='md:min-w-[450px] flex flex-col max-w-14'>
-      {!selectedUser ? <NoChatSelected name={authUser.fullName} /> : (
+      {!selectedUser ? <NoChatSelected name={authUser.username} /> : (
         <>
         <div className='bg-slate-500 px-4 py-2 flex'>
         <span className='w-10 rounded-full'>

@@ -9,16 +9,13 @@ export const signup = (inputs) => async (dispatch) => {
 
   try{
     const {data} = await signupUser(inputs)  
-  //   if(data.error){
-  //     throw new Error(data.error);
-  // }
   
   dispatch({type: SIGNUP_USER, payload: data})
   localStorage.setItem("chat-user", JSON.stringify(data));
 
   }catch(error){
     const {data} = error.response;
-    toast.error(data.error);
+    toast.error(data.message);
   }
 }
 
@@ -35,7 +32,7 @@ export const login = (username, password) => async (dispatch) => {
   }catch(error){
     console.log(error)
     const {data} = error.response;
-    toast.error(data.error);
+    toast.error(data.message);
   }
 }
 
@@ -62,7 +59,7 @@ export const getMessage = (selectedUserId) => async (dispatch) => {
 
     dispatch({type: GET_MESSAGES, payload: data})
   }catch(error){
-    toast.error(error.response.data.error);
+    toast.error(error.response.data.message);
   }
 }
 
@@ -71,7 +68,7 @@ export const sendMessage = (message, receiverId) => async (dispatch) => {
     const { data } = await createMessage(message, receiverId);
     dispatch({ type: SEND_MESSAGE, payload: data });
   } catch (error) {
-    toast.error(error.response.data.error);
+    toast.error(error.response.data.message);
   }
 };
 

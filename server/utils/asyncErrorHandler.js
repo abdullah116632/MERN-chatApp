@@ -1,6 +1,6 @@
 const asyncErrorHandler = (callback) => {
     return (req, res, next) => {
-        callback().catch((err) => next(err))
+        callback(req, res, next).catch((err) => next(err))
     }
 }
 

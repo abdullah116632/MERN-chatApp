@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
+import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 
-const protectRoute = async (req, res, next) => {
-    try{
+const protectRoute = asyncErrorHandler( async (req, res, next) => {
         const token = req.cookies.jwt;
         if(!token){
             return res.status(401).json({error: "Unothorized , no token provided"});
@@ -14,7 +14,7 @@ const protectRoute = async (req, res, next) => {
             return res.status(401).json({error: "unothorized , invalid token"});
         }
 
-        const user = await User.findById(decoded.userId).select("-password");
+        const user = await User.findById(decoded.userId).select("+password");
 
         if(!user){
             return res.status(404).json({error: "User not found"});
@@ -22,9 +22,6 @@ const protectRoute = async (req, res, next) => {
 
         req.user = user;
         next();
-    }catch(error){
-        res.status(500).json({error})
-    }
-}
+})
 
 export default protectRoute;
