@@ -5,12 +5,10 @@ import Home from './pages/home/Home'
 import Login from "./pages/login/Login"
 import SignUp from "./pages/signup/SignUp"
 import { useSelector } from 'react-redux'
-// import { useAuthContext } from './context/AuthContext'
-
+import UpdateProfile from './pages/profile/UpdateProfile'
 
 
 function App() {
-  // const {authUser} = useAuthContext()
   const authUser = useSelector((state) => state.sliceA.authUser)
 
   return (
@@ -19,6 +17,7 @@ function App() {
         <Route path="/" element={authUser ? <Home /> : <Navigate to="/login" /> } />
         <Route path="/login" element={authUser ? <Navigate to="/" /> : <Login />} />
         <Route path="/signup" element={authUser ? <Navigate to="/" /> : <SignUp /> } />
+        <Route path="/update-profile" element={<UpdateProfile />} />
       </Routes>
       <Toaster />
     </div>

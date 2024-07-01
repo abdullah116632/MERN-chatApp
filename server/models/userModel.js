@@ -3,14 +3,10 @@ import validator from "validator";
 import bcryptjs from "bcryptjs"
 
 const userSchema = new mongoose.Schema({
-    fullName: {
+    name: {
         type: String,
-        default: "",
-    },
-    username: {
-        type: String,
-        required: [true, "username is required"],
-        unique: [true, "username already exist"]
+        required: [true, "name is required"],
+        maxlength: [20, "name cannot exceed 16 characters"]
     },
     email : {
         type : String,
@@ -44,13 +40,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    friends : [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            default: []
-        }
-    ],
     isActive : {
         type: Boolean,
         default: true,

@@ -6,7 +6,7 @@ import { login } from "../../actions/messageAction";
 
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
@@ -14,7 +14,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    dispatch(login(username, password));
+    await dispatch(login(email, password));
     setLoading(false)
   }
 
@@ -29,15 +29,15 @@ const Login = () => {
           <div>
             <label className="label p-2">
               <span className="text-base label-text text-slate-800">
-                Username
+                Email
               </span>
             </label>
             <input
-              type="text"
-              placeholder="Enter Username"
+              type="email"
+              placeholder="Enter email"
               className="w-full input input-bordered h-10"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div>

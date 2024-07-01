@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import GenderCheckbox from "./GenderCheckbox";
 import { Link } from "react-router-dom";
 import {useDispatch } from "react-redux";
 import { signup } from "../../actions/messageAction";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
   const [inputs, setInputs] = useState({
-    fullName: "",
-    username: "",
+    name: "",
+    email: "",
     password: "",
     confirmPassword: "",
     gender: "",
@@ -19,15 +20,16 @@ const SignUp = () => {
     setInputs({...inputs, gender})
   }
 
-  // const {loading, signup} = useSignup()
   const dispatch = useDispatch()
 
-  const handleSubmit = async (e)=> {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
-    dispatch(signup(inputs))
+
+    await dispatch(signup(inputs));
+
     setLoading(false);
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-w-96 max-auto">
@@ -38,35 +40,37 @@ const SignUp = () => {
         </h1>
 
         <form onSubmit={handleSubmit}>
+          
           <div>
             <label className="label p-2">
               <span className="text-base label-text text-slate-800">
-                Full Name
+                Name
               </span>
             </label>
             <input
               type="text"
-              placeholder="Enter your fullname"
+              placeholder="Enter your name"
               className="w-full input input-bordered h-10"
-              value={inputs.fullName}
-              onChange={(e) => setInputs({...inputs, fullName: e.target.value})}
+              value={inputs.name}
+              onChange={(e) => setInputs({...inputs, name: e.target.value})}
             />
           </div>
 
           <div>
             <label className="label p-2">
               <span className="text-base label-text text-slate-800">
-                Username
+                Email
               </span>
             </label>
             <input
-              type="text"
-              placeholder="Enter username"
+              type="email"
+              placeholder="Enter your email"
               className="w-full input input-bordered h-10"
-              value={inputs.username}
-              onChange={(e) => setInputs({...inputs, username: e.target.value})}
+              value={inputs.email}
+              onChange={(e) => setInputs({...inputs, email: e.target.value})}
             />
           </div>
+
 
           <div>
             <label className="label p-2">

@@ -15,6 +15,7 @@ import customError from "./utils/customErrorClass.js";
 import authRoutes from "./routes/authRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js"
 import userRoutes from "./routes/userRouts.js"
+import goupMessageRoutes from "./routes/groupMessageRoues.js";
 
 
 dotenv.config()
@@ -30,7 +31,7 @@ let limiter = rateLimit({
 
 app.use(cors({
     origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   }));
 app.use(helmet())
@@ -44,6 +45,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes)
 app.use("/api/messages", messageRoutes)
+app.use("/api/messages/group", goupMessageRoutes)
 app.use("/api/users", userRoutes)
 
 

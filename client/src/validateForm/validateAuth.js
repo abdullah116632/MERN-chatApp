@@ -1,9 +1,9 @@
 import toast from "react-hot-toast";
 
 export const validateSignupInputs = (inputs) => {
-    const {fullName, username, password, confirmPassword, gender} = inputs;
+    const {email, password, confirmPassword, gender} = inputs;
 
-    if(!fullName || !username || !password || !gender){
+    if(!email || !password || !gender){
         toast.error("Please fill all the fields")
         return false
     }
@@ -21,10 +21,14 @@ export const validateSignupInputs = (inputs) => {
     return true;
 }
 
-export const validateLoginInputs = (username, password) => {
-    if(!username || !password ){
-        toast.error("Please fill all the fields")
+export const validateLoginInputs = (email, password) => {
+    if(!email){
+        toast.error("Please enter email")
         return false
+    }
+    if(!password){
+        toast.error("password is missing");
+        return false;
     }
 
     return true;

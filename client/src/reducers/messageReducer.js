@@ -6,10 +6,15 @@ import {
   SELECT_USER_TO_MESSAGE,
   GET_MESSAGES,
   GET_REAL_TIME_MESSAGE,
+  GET_CONVERSATIONS,
+  ADD_CONVERSATION_FROM_SEARCH,
+  DELETE_CONVERSATION,
+  UPDATE_USER,
 } from "../constants/actionType";
 
 const initialState = {
   authUser: JSON.parse(localStorage.getItem("chat-user")) || null,
+  conversations: [],
   selectedUserToMessage: null,
   messages: [],
 };
@@ -28,10 +33,19 @@ const messageREducer = (state = initialState, action) => {
         authUser: action.payload,
       };
 
+    case UPDATE_USER:
+      return {
+        ...state,
+        authUser: action.payload
+      }
+
     case LOGOUT_USER:
       return {
         ...state,
         authUser: action.payload,
+        conversations: [],
+        selectedUserToMessage: null,
+        messages: []
       };
 
     case SELECT_USER_TO_MESSAGE:
@@ -56,6 +70,30 @@ const messageREducer = (state = initialState, action) => {
       return {
         ...state,
         messages: [...state.messages, action.payload],
+      };
+
+    case GET_CONVERSATIONS:
+      return {
+        ...state,
+        conversations: action.payload,
+      };
+
+    case ADD_CONVERSATION_FROM_SEARCH:
+      const updatedConversations = state.conversations.filter(
+        (conversation) => conversation._id !== action.payload._id
+      );
+      return {
+        ...state,
+        conversations: [action.payload, ...updatedConversations],
+      };
+
+    case DELETE_CONVERSATION:
+      const filteredConversation = state.conversations.filter(
+        (conversation) => conversation._id !== action.payload._id
+      );
+      return {
+        ...state,
+        conversations: [...filteredConversation],
       };
 
     default:

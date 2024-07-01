@@ -12,13 +12,15 @@ const deleteImageFromServer = async (imagePath) => {
 }
 
 const deleteImageFromCloudinary = async (imageUrl) => {
+
+    try{
     const pathSegment = imageUrl.split("/");
 
     const lastSegment = pathSegment[pathSegment.length - 1]
     const idSegment = lastSegment.split(".");
     const publicId = idSegment[0];
-    try{
-        const {result} = await cloudinary.uploader.destroy(`chatApp/${publicId}`)
+    
+        const {result} = await cloudinary.uploader.destroy(`chatApp/user-profilePic/${publicId}`)
 
         if(result !== "ok"){
             throw new Error("image was not deleted successfully from cloudnary. Please try again")

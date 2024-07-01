@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { IoIosSend } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessage } from "../../actions/messageAction";
+import { addConversation, sendMessage } from "../../actions/messageAction";
 import toast from "react-hot-toast";
 
 
@@ -9,7 +9,7 @@ const MessageInput = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
-  const receiverId = useSelector((state) => state.sliceA.selectedUserToMessage._id)
+  const receiver = useSelector((state) => state.sliceA.selectedUserToMessage)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +17,8 @@ const MessageInput = () => {
     if(!message) return;
     try{
       setLoading(true)
-      dispatch(sendMessage(message, receiverId))
+      dispatch(sendMessage(message, receiver._id))
+      dispatch(addConversation(receiver))
       setLoading(false)
       setMessage("");
     }catch(err){

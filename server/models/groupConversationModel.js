@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
-const conversationSchema = new mongoose.Schema({
+const groupCoversationSchema = new mongoose.Schema({
+    profilePic: {
+        type: String,
+        default: ""
+    },
     participants: [
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -13,16 +17,9 @@ const conversationSchema = new mongoose.Schema({
             ref: "Message",
             default: []
         }
-    ],
-    deletedBy: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            default: [],
-        }
     ]
 }, {timestamps: true});
 
-const Conversation = mongoose.model("Conversation", conversationSchema)
+const GroupConversation = mongoose.model("GroupConversation", groupCoversationSchema)
 
-export default Conversation;
+export default GroupConversation;
