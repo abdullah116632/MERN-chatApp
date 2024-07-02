@@ -10,6 +10,9 @@ import {
   ADD_CONVERSATION_FROM_SEARCH,
   DELETE_CONVERSATION,
   UPDATE_USER,
+  UPDATE_PASSWORD,
+  DELETE_ACCOUNT,
+  REMOVE_MESSAGE,
 } from "../constants/actionType";
 
 const initialState = {
@@ -34,6 +37,12 @@ const messageREducer = (state = initialState, action) => {
       };
 
     case UPDATE_USER:
+      return {
+        ...state,
+        authUser: action.payload
+      }
+
+    case UPDATE_PASSWORD:
       return {
         ...state,
         authUser: action.payload
@@ -94,6 +103,25 @@ const messageREducer = (state = initialState, action) => {
       return {
         ...state,
         conversations: [...filteredConversation],
+      };
+
+    case DELETE_ACCOUNT: 
+      return {
+        ...state,
+        authUser: action.payload,
+        conversations: [],
+        selectedUserToMessage: null,
+        messages: []
+      }
+
+    case REMOVE_MESSAGE: 
+    const index = state.messages.findIndex(message => message._id === action.payload._id);
+      if (index !== -1) {
+        state.messages[index] = action.payload;
+      }
+      return {
+        ...state,
+        messages: [...state.messages],
       };
 
     default:

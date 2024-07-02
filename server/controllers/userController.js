@@ -1,9 +1,11 @@
 import cloudinary from "../db/cloudinary.js";
 import User from "../models/userModel.js";
+import bcryptjs from "bcryptjs";
 import { deleteImageFromServer, deleteImageFromCloudinary } from "../utils/deleteFileFromCloud.js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import CustomError from "./../utils/customErrorClass.js";
 import Conversation from "../models/conversationModel.js";
+import customError from "./../utils/customErrorClass.js";
 
 export const getConversations = asyncErrorHandler(
   async (req, res, next) => {
@@ -55,6 +57,25 @@ export const searchUser = asyncErrorHandler(async (req, res, next) => {
 });
 
 export const deleteMe = asyncErrorHandler(async (req, res, next) => {
+  const { password } = req.body;
+
+  if (!password) {
+    const error = new customError(400, "Please enter password and, emal");
+    return next(error);
+  }
+
+  const user = await User.findOne({ _id: req.user.id }).select("+password");
+
+  const isPasswordCorrect = await bcryptjs.compare(
+    password,
+    user.password || ""
+  );
+
+  if (!isPasswordCorrect) {
+    const error = new customError(401, "Password dont match");
+    return next(error);
+  }
+
   await User.findByIdAndUpdate(req.user.id, { isActive: false });
 
   res.cookie("jwt", "", { maxAge: 0 });

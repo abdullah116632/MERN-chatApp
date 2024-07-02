@@ -2,34 +2,20 @@ import { ImCross } from "react-icons/im";
 import { CgProfile } from "react-icons/cg";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { AiOutlineUserDelete } from "react-icons/ai";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import DeleteProfile from "./DeleteProfile";
 
 const Settings = ({ setIsSettingOpen }) => {
 
   const popupRef = useRef(null);
 
 
-  const handleUpdatePassword = () => {
-    // Handle the update password logic here
-    console.log("Update Password clicked");
-  };
-
-  const handleUpdateSettings = () => {
-    // Handle the update settings logic here
-    console.log("Update Settings clicked");
-  };
-
-  const handlePrivacySettings = () => {
-    console.log("Privacy Settings clicked");
-  };
-
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
       setIsSettingOpen(false);
     }
   };
-
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -39,6 +25,7 @@ const Settings = ({ setIsSettingOpen }) => {
   }, []);
 
   return (
+  <>
     <div ref={popupRef} className="fixed h-64 w-52 bg-slate-800 top-96 left-[28.5%] rounded-md">
       <div className="flex justify-end">
         <ImCross
@@ -57,20 +44,24 @@ const Settings = ({ setIsSettingOpen }) => {
         </li>
         <li
           className="hover:bg-stone-600 hover:text-red-300 cursor-pointer pl-2 font-semibold flex"
-          onClick={handleUpdatePassword}
         >
+          <Link to="/update-password" className="flex w-full h-full">
           <RiLockPasswordFill className="mr-2 mt-[2px] font-bold text-xl" />
-          Update password
+          Change password
+          </Link>
         </li>
         <li
           className="hover:bg-stone-600 hover:text-red-300 cursor-pointer pl-2 font-semibold flex"
-          onClick={handleUpdateSettings}
+
         >
+          <Link to="/delete-profile" className="flex w-full h-full">
           <AiOutlineUserDelete className="mr-2 mt-[2px] font-bold text-xl" />
           Delete profile
+          </Link>
         </li>
       </ul>
     </div>
+    </>
   );
 };
 

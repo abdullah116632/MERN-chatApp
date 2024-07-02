@@ -2,11 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { fetchUsersForSearch } from "../../api";
 import SearchResult from "./SearchResult";
+import useDebounce from "../../hooks/useDebounce";
 
 const SearchInput = ({ setIsSearchOpen }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const popupRef = useRef(null);
+
+  const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -25,8 +28,8 @@ const SearchInput = ({ setIsSearchOpen }) => {
 
   useEffect(() => {
     const fetchSearchResult = async () => {
-      if (searchQuery) {
-        const { data } = await fetchUsersForSearch(searchQuery);
+      if (debouncedSearchQuery) {
+        const { data } = await fetchUsersForSearch(debouncedSearchQuery);
         setSearchResults(data.data.users);
       }else{
         setSearchResults(null)
@@ -34,7 +37,7 @@ const SearchInput = ({ setIsSearchOpen }) => {
     };
 
     fetchSearchResult();
-  }, [searchQuery]);
+  }, [debouncedSearchQuery]);
 
   return (
     <div ref={popupRef} className="fixed top-1/6 left-1/3 h-4/6 w-1/4 flex flex-col bg-gray-600 shadow-lg p-4 rounded-lg z-50">

@@ -1,11 +1,12 @@
 import { MdDelete } from "react-icons/md";
 import { useState } from "react";
-import Popup from "../sidebar/Popup";
+import MessageOptionsPopup from "./MessageOptionsPopup"
 
 
-const MessageOptions = ({handleOptionsOpen, conversation}) => {
+const MessageOptions = ({messageId}) => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false)
+
   return (
     <>
     <div className=' absolute bg-slate-800 rounded h-8 w-20 z-20 hover:bg-slate-700 hover:text-black'>
@@ -16,7 +17,7 @@ const MessageOptions = ({handleOptionsOpen, conversation}) => {
       
     </div>
     {
-        isPopupOpen && <Popup handleOptionsOpen={handleOptionsOpen} setIsPopupOpen={setIsPopupOpen} conversation={conversation} />
+        isPopupOpen && <MessageOptionsPopup messageId={messageId} />
       }
     </>
   );

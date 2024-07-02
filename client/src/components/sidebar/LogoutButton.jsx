@@ -1,28 +1,21 @@
 import {useState} from 'react';
-import { TbLogout2 } from "react-icons/tb";
 import { IoMdLogOut } from "react-icons/io";
-import {useDispatch} from "react-redux"
-import { logout } from '../../actions/messageAction';
+import LogoutPopup from "./LogoutPopup"
 
 const LogoutButton = () => {
 
-  const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
-
-  const handleClick = async () => {
-    setLoading(true)
-    await dispatch(logout())
-    setLoading(false)
-  }
+  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  
   return (
-    <button className='mt-auto flex pb-2' onClick={handleClick}>
-        {
-          !loading ? (
-            <IoMdLogOut className='w-6 h-6 cursore-pointer mt-3'  />
-          ) : <span className='loading loading-spinner'></span>
-        }
+    <>
+    <button className='mt-auto flex pb-2 w-full h-full' onClick={(e) => setIsPopupOpen(true)}>
+    <IoMdLogOut className='w-6 h-6 cursore-pointer mt-3' />
         <p className='self-center mt-2 ml-2'>Logout</p>
     </button>
+    {
+      isPopupOpen && <LogoutPopup setIsPopupOpen={setIsPopupOpen} />
+    }
+    </>
   );
 }
 

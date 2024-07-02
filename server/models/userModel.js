@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema({
         select: false
     },
     OTP: String,
+    OTPValidated: Boolean,
     OTPExpires: Date
     
 }, {timestamps: true})

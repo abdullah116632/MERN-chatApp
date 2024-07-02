@@ -33,3 +33,16 @@ export const validateLoginInputs = (email, password) => {
 
     return true;
 }
+
+export const validateUpdatePassInputs = (currentPass, newPass, confirmPass) => {
+    if(!currentPass) {
+        toast.error("Please inter current password")
+        return false;
+    }
+    if(newPass !== confirmPass){
+        toast.error("new password and confirm password must be same");
+        return false;
+    }
+
+    return true;
+}

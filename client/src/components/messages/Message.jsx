@@ -19,7 +19,8 @@ const Message = ({ message, nextMessage }) => {
   const profilePic = fromMe ? authUser.profilePic : selectedUser.profilePic;
   const bubbleBgColor = fromMe ? "bg-blue-500" : "";
   const haveProfilePic = shouldShowProfilePic(message, nextMessage);
-  const marginWhenNoProfileForRecever = haveProfilePic ? "" : "ml-8";
+  const marginWhenNoProfileForRecever = haveProfilePic ? "" : "ml-11";
+  const isMessageRemoved = message.isRemoved;
 
   return (
     <div
@@ -35,18 +36,20 @@ const Message = ({ message, nextMessage }) => {
         </div>
       )}
       <div className="flex">
-        {fromMe && isHovered && <OptionsButton />}
+        {fromMe && isHovered && !isMessageRemoved && <OptionsButton messageId={message._id} />}
         <div>
-          <div
+          {
+            !isMessageRemoved ? (<div
             className={`chat-bubble text-white ${marginWhenNoProfileForRecever} ${bubbleBgColor}`}
           >
             {message.message}
-          </div>
+          </div>) : (<div className={`bg-red-600 h-9 flex items-center border rounded-lg ${marginWhenNoProfileForRecever}`} ><p className=" text-yellow-50 mx-3 pb-1">This message is removed</p></div>)
+          }
           <div className="chat-footer opacity-50 text-md font-medium flex gap-1 items-center text-gray-900">
             {formatedTime}
           </div>
         </div>
-        {!fromMe && isHovered && <OptionsButton />}
+        {!fromMe && isHovered && !isMessageRemoved && <OptionsButton messageId={message._id} />}
       </div>
     </div>
   );

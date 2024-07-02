@@ -37,6 +37,31 @@ export const updateUser = (userObj) => {
   )
 }
 
+export const updatePassword = (currentPassword, newPassword, confirmPassword) => {
+  return (
+    axios.patch(`${url}/auth/update-password`, { currentPassword, newPassword, confirmPassword }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    })
+  )
+}
+
+export const deleteUser = (password) => {
+  return (
+    axios.delete(`${url}/users`, {
+      data: {
+        password
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true,
+    },)
+  )
+}
+
 export const logoutUser = () => {
   return axios.post(
     "http://localhost:8000/api/auth/logout",
@@ -47,6 +72,30 @@ export const logoutUser = () => {
     }
   );
 };
+
+export const forgetPassword = (email) => {
+  return (
+    axios.post(`${url}/auth/forget-password`, {email}, {
+      headers: {"Content-Type": "application/json"}
+    })
+  )
+}
+
+export const validateOtp = (email, otp) => {
+  return (
+    axios.post(`${url}/auth/validate-otp`, {email, OTP: otp}, {
+      headers: {"Content-Type" : "application/json"}
+    })
+  )
+}
+
+export const resetPassword = (email, password, confirmPassword) => {
+  return (
+    axios.post(`${url}/auth/reset-password`, {email, newPassword: password, confirmPassword}, {
+      headers: {"Content-Type" : "application/json"}
+    })
+  )
+}
 
 export const fetchConversations = () =>
   axios.get(`${url}/users`, {
@@ -81,6 +130,18 @@ export const fetchMessages = (selectedUserId) =>
     },
     withCredentials: true,
 });
+
+export const removeMessage = (messageId) => {
+  console.log(messageId)
+  return (
+    axios.patch(`${url}/messages/${messageId}`,{}, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true, 
+    })
+  )
+}
 
 export const deleteConversation = (userId) => {
   return (

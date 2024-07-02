@@ -132,12 +132,43 @@ export const forgetPassword = asyncErrorHandler(async (req, res, next) => {
   }
 });
 
-export const resetPassword = asyncErrorHandler(async (req, res, next) => {
-  const { email, OTP, newPassword, confirmPassword } = req.body;
+export const validateOtp = asyncErrorHandler(async (req, res, next) => {
+  const {OTP, email} = req.body;
 
   if (!OTP) {
     return next(new customError(400, "please send your otp"));
   }
+
+  const user = await User.findOne({
+    email,
+    isActive: { $ne: false },
+    OTP,
+    OTPExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return next(
+      new customError(404, "OTP dont match or has expired or user dont exist")
+    );
+  }
+
+  user.OTP = undefined;
+  user.OTPExpires = undefined;
+  user.OTPValidated = true;
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user
+    },
+  });
+})
+
+export const resetPassword = asyncErrorHandler(async (req, res, next) => {
+  const { email, newPassword, confirmPassword } = req.body;
+
   if (!email || !newPassword || !confirmPassword) {
     return next(
       new customError(
@@ -155,19 +186,17 @@ export const resetPassword = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findOne({
     email,
     isActive: { $ne: false },
-    OTP,
-    OTPExpires: { $gt: Date.now() },
-  });
+    OTPValidated: {$ne: false},
+  })
 
   if (!user) {
     return next(
-      new customError(404, "OTP dont match or has expired or user dont exist")
+      new customError(404, "OTP validation failed or user dont exist")
     );
   }
 
   user.password = newPassword;
-  user.OTP = undefined;
-  user.OTPExpires = undefined;
+  user.OTPValidated = undefined;
 
   await user.save({ validateBeforeSave: false });
 

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MessageOptions from './MessageOptions';
 
-const OptionsButton = () => {
+const OptionsButton = ({messageId}) => {
+
     const [isOptionsOpen, setIsOptionsOpen] = useState(false)
     console.log(isOptionsOpen)
 
@@ -12,7 +13,7 @@ const OptionsButton = () => {
             <BsThreeDotsVertical />
           </button>
           {
-            isOptionsOpen && <MessageOptions />
+            isOptionsOpen && <MessageOptions messageId={messageId} />
           }
           </div>
   );
