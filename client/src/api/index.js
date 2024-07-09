@@ -64,7 +64,7 @@ export const deleteUser = (password) => {
 
 export const logoutUser = () => {
   return axios.post(
-    "http://localhost:8000/api/auth/logout",
+    `${url}/auth/logout`,
     {},
     {
       headers: { "Content-Type": "application/json" },
@@ -104,19 +104,20 @@ export const fetchConversations = () =>
 });
 
 export const fetchUsersForSearch = (queryStr) => {
+  console.log(queryStr)
   return (axios.get(`${url}/users/search?query=${queryStr}`, {
     headers: { "Content-Type": "application/json" },
     withCredentials: true,
   }));
 };
 
-export const createMessage = (message, receiverId) => {
+export const createMessage = (messageData, receiverId, contentType) => {
   return axios.post(
     `${url}/messages/send/${receiverId}`,
-    { message },
+    messageData,
     {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": contentType,
       },
       withCredentials: true,
     }
@@ -131,10 +132,20 @@ export const fetchMessages = (selectedUserId) =>
     withCredentials: true,
 });
 
-export const removeMessage = (messageId) => {
-  console.log(messageId)
+export const removeMessageForSender = (messageId) => {
   return (
-    axios.patch(`${url}/messages/${messageId}`,{}, {
+    axios.patch(`${url}/messages/remove/${messageId}`,{}, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true, 
+    })
+  )
+}
+
+export const removeMessageForAll = (messageId, reciverId) => {
+  return (
+    axios.patch(`${url}/messages/remove-forAll/${messageId}/${reciverId}`,{}, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -149,6 +160,33 @@ export const deleteConversation = (userId) => {
       headers: {
         "Content-Type": "application/json",
       },
+      withCredentials: true,
+  })
+  )
+}
+
+export const fetchUser = (userId) => {
+  return (
+    axios.get(`${url}/users/user/${userId}`, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+  })
+  )
+}
+
+export const numberOfUnseenMessages = (userId) => {
+  return (
+    axios.get(`${url}/messages/unseen-count/${userId}`,{
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+  })
+  )
+}
+
+export const resetUnseenMessages = (userId) => {
+  return(
+    axios.patch(`${url}/messages/mark-as-seen/${userId}`, {}, {
+      headers: { "Content-Type": "application/json" },
       withCredentials: true,
   })
   )

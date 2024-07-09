@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Conversation from "./Conversation";
-// import { fetchUsers } from "../../api";
 import toast from "react-hot-toast";
 import { MdPersonSearch } from "react-icons/md";
 import { getConversations } from "../../actions/messageAction";
+import useListenMessages from "../../hooks/useListenMessages";
 
 const Conversations = () => {
   const [loading, setLoading] = useState(false);
   const [activeConversation, setActiveConversation] = useState(null);
 
+  useListenMessages()
   const dispatch = useDispatch()
   const conversations = useSelector((state) => state.sliceA.conversations);
 

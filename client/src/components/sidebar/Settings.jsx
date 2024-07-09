@@ -4,12 +4,11 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { AiOutlineUserDelete } from "react-icons/ai";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import DeleteProfile from "./DeleteProfile";
+
 
 const Settings = ({ setIsSettingOpen }) => {
 
   const popupRef = useRef(null);
-
 
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {

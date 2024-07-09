@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Message from "./Message";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
-import useListenMessages from "../../hooks/useListenMessages";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessage } from "../../actions/messageAction";
 
@@ -12,7 +11,6 @@ const Messages = () => {
   const user = useSelector((state) => state.sliceA.selectedUserToMessage)
   const messages = useSelector((state) => state.sliceA.messages)
 
-  useListenMessages();
   const lastMessageRef = useRef();
 
   useEffect(() => {

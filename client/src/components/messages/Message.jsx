@@ -2,9 +2,12 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { extractTime } from "../../utils/extractTime";
 import OptionsButton from "./OptionsButton";
+import MessageOptions from "./MessageOptions";
+
 
 const Message = ({ message, nextMessage }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false)
 
   const authUser = useSelector((state) => state.sliceA.authUser);
   const selectedUser = useSelector(
@@ -20,36 +23,41 @@ const Message = ({ message, nextMessage }) => {
   const bubbleBgColor = fromMe ? "bg-blue-500" : "";
   const haveProfilePic = shouldShowProfilePic(message, nextMessage);
   const marginWhenNoProfileForRecever = haveProfilePic ? "" : "ml-11";
-  const isMessageRemoved = message.isRemoved;
+  const isMessageRemovedFromAll = message.removedForEveryone;
+  const isMessageRemovedFromMe = message.removedBy.includes(authUser._id)
 
   return (
     <div
-      className={`chat ${chatClassName}`}
+      className={`chat ${chatClassName} ${fromMe ? "" : marginWhenNoProfileForRecever}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {authUser._id !== message.senderId && haveProfilePic && (
-        <div className="chat-image avatar">
+        <div className="chat-image avatar mb-4">
           <div className="w-8 rounded-full">
-            <img alt="tailwind css chat bubble component" src={profilePic} />
+            <img alt="user profile" src={profilePic} />
           </div>
         </div>
       )}
-      <div className="flex">
-        {fromMe && isHovered && !isMessageRemoved && <OptionsButton messageId={message._id} />}
+      <div className=" relative flex">
+      {fromMe && isHovered && !(isMessageRemovedFromAll || isMessageRemovedFromMe) && <OptionsButton setIsOptionsOpen={setIsOptionsOpen} />}
+        {fromMe && isOptionsOpen && <MessageOptions setIsOptionsOpen={setIsOptionsOpen} messageId={message._id} fromMe={fromMe}  />}
         <div>
           {
-            !isMessageRemoved ? (<div
-            className={`chat-bubble text-white ${marginWhenNoProfileForRecever} ${bubbleBgColor}`}
-          >
-            {message.message}
-          </div>) : (<div className={`bg-red-600 h-9 flex items-center border rounded-lg ${marginWhenNoProfileForRecever}`} ><p className=" text-yellow-50 mx-3 pb-1">This message is removed</p></div>)
+            !(isMessageRemovedFromAll || isMessageRemovedFromMe) ? (!message.isFile ? (<div
+              className={`chat-bubble text-white ${bubbleBgColor} max-w-xs`}
+            >
+              {message.message}
+            </div>) : (<img className=" w-56 rounded-sm" src={message.message}/>)) : (<div className="bg-gradient-to-r from-red-500 to-pink-500 text-white border-2 border-red-700 rounded-lg p-2 flex items-center shadow-md">
+              <p className="text-sm font-semibold mx-2">This message has been removed</p>
+            </div>)
           }
           <div className="chat-footer opacity-50 text-md font-medium flex gap-1 items-center text-gray-900">
             {formatedTime}
           </div>
         </div>
-        {!fromMe && isHovered && !isMessageRemoved && <OptionsButton messageId={message._id} />}
+        {!fromMe && isHovered && !(isMessageRemovedFromAll || isMessageRemovedFromMe) && <OptionsButton setIsOptionsOpen={setIsOptionsOpen} />}
+        {!fromMe && isOptionsOpen && <MessageOptions setIsOptionsOpen={setIsOptionsOpen} messageId={message._id} fromMe={fromMe} />}
       </div>
     </div>
   );

@@ -33,6 +33,17 @@ export const getConversations = asyncErrorHandler(
   }
 );
 
+export const getUserById = asyncErrorHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user
+    }
+  })
+})
+
 export const searchUser = asyncErrorHandler(async (req, res, next) => {
   const { query } = req.query;
 
@@ -98,8 +109,6 @@ export const updateMe = asyncErrorHandler(async (req, res, next) => {
 
   if (req.file) {
     const user = await User.findOne({_id: req.user.id})
-    console.log(req.file.path)
-    console.log(user.profilePic)
     await deleteImageFromCloudinary(user.profilePic)
 
     
@@ -122,8 +131,6 @@ export const updateMe = asyncErrorHandler(async (req, res, next) => {
     },
     { runValidators: true, new: true }
   );
-
-  console.log(updatedUser)
 
   res.status(200).json({
     status: "success",

@@ -1,20 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import MessageOptions from './MessageOptions';
 
-const OptionsButton = ({messageId}) => {
-
-    const [isOptionsOpen, setIsOptionsOpen] = useState(false)
-    console.log(isOptionsOpen)
-
+const OptionsButton = ({setIsOptionsOpen}) => {
+  
   return (
-          <div>
-            <button className="text-slate-900 mx-2 mt-4 relative" onClick={(e) => setIsOptionsOpen(true)}>
+          <div >
+            <button className="text-slate-900 mx-2 mt-4" onClick={(e) => setIsOptionsOpen(true)}>
             <BsThreeDotsVertical />
           </button>
-          {
-            isOptionsOpen && <MessageOptions messageId={messageId} />
-          }
           </div>
   );
 }

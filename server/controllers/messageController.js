@@ -1,6 +1,5 @@
 import Conversation from "../models/conversationModel.js";
 import Message from "../models/messageModel.js";
-import User from "../models/userModel.js";
 import { getReciverSockerId, io } from "../socket/socket.js";
 import asyncErrorHandler from "../utils/asyncErrorHandler.js";
 import cloudinary from "../db/cloudinary.js";
@@ -19,7 +18,7 @@ export const sendMessage = asyncErrorHandler(async (req, res, next) => {
   if (req.file) {
     const response = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "auto",
-      folder: "chatApp",
+      folder: "chatApp/messages-media",
     });
     await deleteImageFromServer(req.file.path);
     message = response.secure_url;
@@ -35,11 +34,13 @@ export const sendMessage = asyncErrorHandler(async (req, res, next) => {
     });
   }
 
-  if (conversation.deletedBy.includes(senderId)) {
-    conversation.deletedBy = conversation.deletedBy.filter(
-      (id) => id.toString() !== senderId.toString()
-    );
-  }
+  conversation.deletedBy = [];
+
+  // if (conversation.deletedBy.includes(senderId)) {
+  //   conversation.deletedBy = conversation.deletedBy.filter(
+  //     (id) => id.toString() !== senderId.toString()
+  //   );
+  // }
 
   const newMessage = new Message({
     senderId,
@@ -55,6 +56,7 @@ export const sendMessage = asyncErrorHandler(async (req, res, next) => {
   await Promise.all([conversation.save(), newMessage.save()]);
 
   const receiverSocketId = getReciverSockerId(receiverId);
+  console.log(receiverSocketId);
   if (receiverSocketId) {
     io.to(receiverSocketId).emit("newMessage", newMessage);
   }
@@ -133,12 +135,22 @@ export const deleteConversation = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-export const removeMessage = asyncErrorHandler(async (req, res, next) => {
-  const removedMessage = await Message.findByIdAndUpdate(
-    req.params.id,
-    { isRemoved: true },
-    { new: true }
-  );
+export const removeMessageForOne = asyncErrorHandler(async (req, res, next) => {
+
+  const userId = req.user._id;
+
+    const message = await Message.findById(req.params.messageId);
+
+    if (!message) {
+      return res.status(404).json({ error: 'Message not found' });
+    }
+
+    if (!message.removedBy.includes(userId)) {
+      message.removedBy.push(userId);
+      await message.save();
+    }
+
+    const removedMessage = await Message.findById(req.params.messageId)
 
   res.status(200).json({
     status: "success",
@@ -146,8 +158,56 @@ export const removeMessage = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
-export const deleAllMessage = asyncErrorHandler(async (req, res, next) => {
-  await Conversation.deleteMany({});
+export const removeMessageForAll = asyncErrorHandler(async (req, res, next) => {
+  const message = await Message.findById(req.params.messageId);
 
-  res.send("success");
-});
+  if (!message) {
+    return res.status(404).json({ error: 'Message not found' });
+  }
+
+  message.removedForEveryone = true;
+  await message.save();
+
+  const removedMessage = await Message.findById(req.params.messageId);
+
+  const receiverSocketId = getReciverSockerId(req.params.reciverId);
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("removedMessageForAll", removedMessage);
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: { message: removedMessage },
+  });
+})
+
+export const unseenMessageCount = asyncErrorHandler(async (req, res, next) => {
+
+  const { userId } = req.params;
+
+  const unseenCount = await Message.countDocuments({
+    senderId: userId,
+    seenBy: {$nin: [req.user._id]}
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      unseenCount
+    }
+  })
+
+
+})
+
+export const markMessageAsSeen = asyncErrorHandler(async (req, res, next) => {
+  await Message.updateMany(
+    { senderId: req.params.userId, seenBy: {$nin: [req.user._id]} },
+    { $addToSet: { seenBy: req.user._id } }
+  );
+
+  res.status(200).json({
+    status: "success",
+    data: null
+  })
+})

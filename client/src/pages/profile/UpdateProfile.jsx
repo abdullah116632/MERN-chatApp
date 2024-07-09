@@ -45,6 +45,7 @@ const UpdateProfile = () => {
       formData.append("profilePic", selectedFile);
     }
 
+
     await dispatch(updateUserInfo(formData))
     setLoading(false)
     setEditMode(false)

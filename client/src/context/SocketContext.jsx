@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-// import { useAuthContext } from "./AuthContext";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
 
@@ -12,7 +11,6 @@ export const useSocketContext = () => {
 export const SocketContextProvider = ({children}) => {
     const [socket, setSocket] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState([])
-    // const {authUser} = useAuthContext()
     const authUser = useSelector((state) => state.sliceA.authUser)
 
     useEffect(() => {
@@ -37,6 +35,8 @@ export const SocketContextProvider = ({children}) => {
             }
         }
     },[authUser])
+
+    
     return (
         <SocketContext.Provider value={{socket, onlineUsers}}>
             {children}

@@ -6,8 +6,7 @@ import { useRef, useEffect } from "react";
 const Menu = ({setIsMenuOpen}) => {
 
   const popupRef = useRef(null);
-
-
+  
   const handleCreateGroup = () => {
 
   }

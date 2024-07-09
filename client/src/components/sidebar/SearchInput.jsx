@@ -3,6 +3,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { fetchUsersForSearch } from "../../api";
 import SearchResult from "./SearchResult";
 import useDebounce from "../../hooks/useDebounce";
+import { axiosErrorHandiling } from "../../utils/handleError";
 
 const SearchInput = ({ setIsSearchOpen }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,11 +29,15 @@ const SearchInput = ({ setIsSearchOpen }) => {
 
   useEffect(() => {
     const fetchSearchResult = async () => {
-      if (debouncedSearchQuery) {
-        const { data } = await fetchUsersForSearch(debouncedSearchQuery);
-        setSearchResults(data.data.users);
-      }else{
-        setSearchResults(null)
+      try{
+        if (debouncedSearchQuery) {
+          const { data } = await fetchUsersForSearch(debouncedSearchQuery);
+          setSearchResults(data.data.users);
+        }else{
+          setSearchResults(null)
+        }
+      }catch(error){
+        axiosErrorHandiling(error)
       }
     };
 
