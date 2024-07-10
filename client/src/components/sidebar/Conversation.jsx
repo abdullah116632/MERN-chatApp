@@ -5,6 +5,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import Options from "./Options";
 import { useEffect, useState } from "react";
 import { numberOfUnseenMessages, resetUnseenMessages } from "../../api";
+import useCountUnseenMessage from "../../hooks/useCountUnseenMessage";
 
 const Conversation = ({
   conversation,
@@ -12,16 +13,13 @@ const Conversation = ({
   isOptionsOpen,
   handleOptionsOpen,
 }) => {
-
+  
   const [unseenMessages, setUnseenMessages] = useState(0);
 
-  const {socket} = useSocketContext()
-  
   const dispatch = useDispatch();
   const selectedUser = useSelector(
     (state) => state.sliceA.selectedUserToMessage
   );
-
 
   const isSelected = selectedUser?._id === conversation._id;
   const { onlineUsers } = useSocketContext();
@@ -33,28 +31,16 @@ const Conversation = ({
     setUnseenMessages(0);
   };
 
-  useEffect(() => {
-    const handleNewMessage = (message) => {
-      if ((selectedUser?._id !== message.senderId) && (conversation._id === message.senderId)) {
-        setUnseenMessages((prevState) => prevState + 1);
-      }
-    };
-
-    socket.on("newMessage", handleNewMessage);
-
-    return () => {
-      socket.off("newMessage", handleNewMessage);
-    };
-  }, [socket, selectedUser, conversation._id]);
+  useCountUnseenMessage(conversation, selectedUser, setUnseenMessages);
 
   useEffect(() => {
     const countUnseenMessages = async (userId) => {
-      const {data} = await numberOfUnseenMessages(userId)
+      const { data } = await numberOfUnseenMessages(userId);
       setUnseenMessages(data.data.unseenCount);
-    }
+    };
 
-    countUnseenMessages(conversation._id)
-  },[])
+    countUnseenMessages(conversation._id);
+  }, [conversation._id]);
 
   return (
     <>
@@ -78,12 +64,17 @@ const Conversation = ({
                 className="text-xl text-blue-950 rounded-full hover:bg-gray-500 font-semibold hover:shadow-lg mr-2"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleOptionsOpen()
+                  handleOptionsOpen();
                 }}
               >
                 <HiOutlineDotsHorizontal />
               </button>
-              {isOptionsOpen && <Options handleOptionsOpen={handleOptionsOpen} conversation={conversation} />}
+              {isOptionsOpen && (
+                <Options
+                  handleOptionsOpen={handleOptionsOpen}
+                  conversation={conversation}
+                />
+              )}
               {unseenMessages > 0 && (
                 <span className="text-white bg-red-600 w-6 h-6 rounded-full flex items-center justify-center font-bold mr-2 p-2">
                   {unseenMessages}

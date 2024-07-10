@@ -174,9 +174,9 @@ export const fetchUser = (userId) => {
   )
 }
 
-export const numberOfUnseenMessages = (userId) => {
+export const numberOfUnseenMessages = (senderId) => {
   return (
-    axios.get(`${url}/messages/unseen-count/${userId}`,{
+    axios.get(`${url}/messages/unseen-count/${senderId}`,{
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
   })
@@ -189,5 +189,14 @@ export const resetUnseenMessages = (userId) => {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
   })
+  )
+}
+
+export const updateSingleMessageAsSeen = (messageId) => {
+  return (
+    axios.patch(`${url}/messages/mark-realTime-message-as-seen/${messageId}`, {}, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    })
   )
 }

@@ -178,4 +178,3 @@ export const realtimeMessageRemoveFromAll = (message) => ({
   type: REMOVE_MESSAGE_FOR_ALL,
   payload: message,
 });
-

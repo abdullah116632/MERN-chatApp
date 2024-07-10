@@ -136,21 +136,20 @@ export const deleteConversation = asyncErrorHandler(async (req, res, next) => {
 });
 
 export const removeMessageForOne = asyncErrorHandler(async (req, res, next) => {
-
   const userId = req.user._id;
 
-    const message = await Message.findById(req.params.messageId);
+  const message = await Message.findById(req.params.messageId);
 
-    if (!message) {
-      return res.status(404).json({ error: 'Message not found' });
-    }
+  if (!message) {
+    return res.status(404).json({ error: "Message not found" });
+  }
 
-    if (!message.removedBy.includes(userId)) {
-      message.removedBy.push(userId);
-      await message.save();
-    }
+  if (!message.removedBy.includes(userId)) {
+    message.removedBy.push(userId);
+    await message.save();
+  }
 
-    const removedMessage = await Message.findById(req.params.messageId)
+  const removedMessage = await Message.findById(req.params.messageId);
 
   res.status(200).json({
     status: "success",
@@ -162,7 +161,7 @@ export const removeMessageForAll = asyncErrorHandler(async (req, res, next) => {
   const message = await Message.findById(req.params.messageId);
 
   if (!message) {
-    return res.status(404).json({ error: 'Message not found' });
+    return res.status(404).json({ error: "Message not found" });
   }
 
   message.removedForEveryone = true;
@@ -179,32 +178,61 @@ export const removeMessageForAll = asyncErrorHandler(async (req, res, next) => {
     status: "success",
     data: { message: removedMessage },
   });
-})
+});
 
 export const unseenMessageCount = asyncErrorHandler(async (req, res, next) => {
+  const { senderId } = req.params;
+  const reciverId = req.user._id;
 
-  const { userId } = req.params;
+  if (!reciverId || !senderId) {
+    return next(new customError(400, "senderId or reciverId is missing"));
+  }
 
-  const unseenCount = await Message.countDocuments({
-    senderId: userId,
-    seenBy: {$nin: [req.user._id]}
+  const conversation = await Conversation.findOne({
+    participants: { $all: [senderId, reciverId] },
+  }).populate({
+    path: "messages",
+    match: {
+      senderId: { $ne: reciverId },
+      deletedBy: { $nin: [reciverId] },
+      seenBy: { $nin: [reciverId] },
+    },
   });
 
   res.status(200).json({
     status: "success",
     data: {
-      unseenCount
-    }
-  })
-
-
-})
+      unseenCount: conversation.messages.length,
+    },
+  });
+});
 
 export const markMessageAsSeen = asyncErrorHandler(async (req, res, next) => {
+  const { senderId } = req.params;
+  const reciverId = req.user._id;
+
+  const conversation = await Conversation.findOne({
+    participants: { $all: [senderId, reciverId] },
+  });
+
   await Message.updateMany(
-    { senderId: req.params.userId, seenBy: {$nin: [req.user._id]} },
-    { $addToSet: { seenBy: req.user._id } }
+    { _id: { $in: conversation.messages } },
+    { $addToSet: { seenBy: reciverId } }
   );
+
+  res.status(200).json({
+    status: "success",
+    data: null,
+  });
+});
+
+export const markRealTimeMessageAsSeen = asyncErrorHandler( async (req, res, next) => {
+  const {messageId} = req.params
+
+  await Message.updateOne(
+    {_id: messageId},
+    {$addToSet : {seenBy: req.user._id}}
+  )
 
   res.status(200).json({
     status: "success",
