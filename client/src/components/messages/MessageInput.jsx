@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IoIosSend } from "react-icons/io";
 import { FaFileImage } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessage, setConversation } from "../../actions/messageAction";
+import { sendTextMessage, sendFileMessage, setConversation } from "../../actions/messageAction";
 
 
 const MessageInput = () => {
@@ -27,12 +27,12 @@ const MessageInput = () => {
     if(!message && !file) return;
     setLoading(true)
 
-    if (file) {
+    if (!file) {
+      dispatch(sendTextMessage(message, receiver._id));
+    } else {
       const formData = new FormData();
       formData.append("messageFile", selectedFile);
-      await dispatch(sendMessage(formData, receiver._id, "multipart/form-data"));
-    } else {
-      await dispatch(sendMessage({message}, receiver._id, "application/json"));
+      await dispatch(sendFileMessage(formData, receiver._id));
     }
     dispatch(setConversation(receiver));
     setMessage("");

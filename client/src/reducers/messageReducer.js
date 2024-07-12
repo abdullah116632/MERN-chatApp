@@ -17,6 +17,7 @@ import {
   REMOVE_MESSAGE_FOR_SENDER,
   RESET_UNSEEN_MESSAGES,
   GET_REAL_TIME_MESSAGE_FROM_NEW,
+  GET_MORE_MESSAGES,
 } from "../constants/actionType";
 
 const initialState = {
@@ -74,10 +75,17 @@ const messageReducer = (state = initialState, action) => {
       };
 
     case GET_MESSAGES:
+        return {
+          ...state,
+          messages: action.payload
+        }
+      
+    case GET_MORE_MESSAGES:
       return {
         ...state,
-        messages: action.payload,
-      };
+        messages: [...action.payload, ...state.messages]
+      }
+
 
     case GET_REAL_TIME_MESSAGE:
       const {senderId} = action.payload
@@ -109,7 +117,6 @@ const messageReducer = (state = initialState, action) => {
         conversations: [action.payload, ...state.conversations]
       }
       
-
     case GET_CONVERSATIONS:
       return {
         ...state,

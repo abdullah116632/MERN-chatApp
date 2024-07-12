@@ -111,26 +111,43 @@ export const fetchUsersForSearch = (queryStr) => {
   }));
 };
 
-export const createMessage = (messageData, receiverId, contentType) => {
+export const createTextMessage = (messageData, receiverId) => {
   return axios.post(
-    `${url}/messages/send/${receiverId}`,
-    messageData,
+    `${url}/messages/send-text/${receiverId}`,
+    {message: messageData},
     {
       headers: {
-        "Content-Type": contentType,
+        "Content-Type": "application/json",
       },
       withCredentials: true,
     }
   );
 };
 
-export const fetchMessages = (selectedUserId) =>
-  axios.get(`${url}/messages/${selectedUserId}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-});
+export const createFileMessage = (messageData, receiverId) => {
+  return axios.post(
+    `${url}/messages/send-file/${receiverId}`,
+    messageData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    }
+  );
+};
+
+export const fetchMessages = (selectedUserId, page) =>{
+
+  return (
+    axios.get(`${url}/messages/${selectedUserId}?page=${page}&limit=10`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+  })
+  )
+};
 
 export const removeMessageForSender = (messageId) => {
   return (

@@ -3,6 +3,12 @@ import toast from "react-hot-toast";
 export const validateSignupInputs = (inputs) => {
     const {email, password, confirmPassword, gender} = inputs;
 
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!regex.test(email)){
+        toast.error("Not a valid email address")
+        return false
+    }
+
     if(!email || !password || !gender){
         toast.error("Please fill all the fields")
         return false
@@ -22,6 +28,11 @@ export const validateSignupInputs = (inputs) => {
 }
 
 export const validateLoginInputs = (email, password) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!regex.test(email)){
+        toast.error("Not a valid email address")
+        return false
+    }
     if(!email){
         toast.error("Please enter email")
         return false

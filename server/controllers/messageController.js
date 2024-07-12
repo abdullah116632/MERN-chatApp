@@ -6,8 +6,7 @@ import cloudinary from "../db/cloudinary.js";
 import { deleteImageFromServer } from "../utils/deleteFileFromCloud.js";
 import customError from "../utils/customErrorClass.js";
 
-export const sendMessage = asyncErrorHandler(async (req, res, next) => {
-  let { message } = req.body;
+export const sendFileMessage = asyncErrorHandler(async (req, res, next) => {
   const { id: receiverId } = req.params;
   const senderId = req.user._id;
 
@@ -15,14 +14,16 @@ export const sendMessage = asyncErrorHandler(async (req, res, next) => {
     return next(new customError(400, "receiverId and sender Id is missing"));
   }
 
-  if (req.file) {
+  if(!req.file){
+    return next(new customError(400, "this is not a file"))
+  }
+
     const response = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "auto",
       folder: "chatApp/messages-media",
     });
     await deleteImageFromServer(req.file.path);
-    message = response.secure_url;
-  }
+    const message = response.secure_url;
 
   let conversation = await Conversation.findOne({
     participants: { $all: [senderId, receiverId] },
@@ -56,7 +57,6 @@ export const sendMessage = asyncErrorHandler(async (req, res, next) => {
   await Promise.all([conversation.save(), newMessage.save()]);
 
   const receiverSocketId = getReciverSockerId(receiverId);
-  console.log(receiverSocketId);
   if (receiverSocketId) {
     io.to(receiverSocketId).emit("newMessage", newMessage);
   }
@@ -69,10 +69,56 @@ export const sendMessage = asyncErrorHandler(async (req, res, next) => {
   });
 });
 
+export const sendTextMessage = asyncErrorHandler(async (req, res, next) => {
+  let { message } = req.body;
+  const { id: receiverId } = req.params;
+  const senderId = req.user._id;
+
+  if (!receiverId && !senderId) {
+    return next(new customError(400, "receiverId and sender Id is missing"));
+  }
+
+  let conversation = await Conversation.findOne({
+    participants: { $all: [senderId, receiverId] },
+  });
+
+  if (!conversation) {
+    conversation = await Conversation.create({
+      participants: [senderId, receiverId],
+    });
+  }
+
+  conversation.deletedBy = [];
+
+  const newMessage = new Message({
+    senderId,
+    receiverId,
+    message,
+  });
+
+  if (newMessage) {
+    conversation.messages.push(newMessage._id);
+  }
+
+  await Promise.all([conversation.save(), newMessage.save()]);
+
+  const receiverSocketId = getReciverSockerId(receiverId);
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("newMessage", newMessage);
+  }
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      message: newMessage,
+    },
+  });
+})
+
 export const getMessage = asyncErrorHandler(async (req, res, next) => {
   const { id: friendsId } = req.params;
   const senderId = req.user._id;
-  const { page = 1, limit = 100 } = req.query;
+  const { page = 1, limit = 10 } = req.query;
 
   if (!friendsId || !senderId) {
     return next(new customError(400, "senderId or friendsId is missing"));
@@ -84,7 +130,7 @@ export const getMessage = asyncErrorHandler(async (req, res, next) => {
     path: "messages",
     match: { deletedBy: { $ne: senderId } },
     options: {
-      sort: { timestamp: -1 }, // sort messages by timestamp in descending order
+      sort: { createdAt: -1 },
       skip: (page - 1) * limit,
       limit: parseInt(limit),
     },
