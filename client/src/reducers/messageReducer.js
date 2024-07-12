@@ -25,6 +25,7 @@ const initialState = {
   conversations: [],
   selectedUserToMessage: null,
   messages: [],
+  numberOfNewMessage: 0
 };
 
 const messageReducer = (state = initialState, action) => {
@@ -60,18 +61,21 @@ const messageReducer = (state = initialState, action) => {
         conversations: [],
         selectedUserToMessage: null,
         messages: [],
+        numberOfNewMessage: 0
       };
 
     case SELECT_USER_TO_MESSAGE:
       return {
         ...state,
         selectedUserToMessage: action.payload,
+        numberOfNewMessage: 0
       };
 
     case SEND_MESSAGE:
       return {
         ...state,
         messages: [...state.messages, action.payload],
+        numberOfNewMessage: state.numberOfNewMessage + 1
       };
 
     case GET_MESSAGES:
@@ -86,7 +90,6 @@ const messageReducer = (state = initialState, action) => {
         messages: [...action.payload, ...state.messages]
       }
 
-
     case GET_REAL_TIME_MESSAGE:
       const {senderId} = action.payload
       
@@ -99,10 +102,10 @@ const messageReducer = (state = initialState, action) => {
       )
 
       if (senderId === state.selectedUserToMessage?._id) {
-        const newMessage = action.payload;
         return {
           ...state,
-          messages: [...state.messages, newMessage],
+          messages: [...state.messages, action.payload],
+          numberOfNewMessage: state.numberOfNewMessage + 1
         };
       }
 
@@ -114,7 +117,7 @@ const messageReducer = (state = initialState, action) => {
     case GET_REAL_TIME_MESSAGE_FROM_NEW: 
       return {
         ...state,
-        conversations: [action.payload, ...state.conversations]
+        conversations: [action.payload, ...state.conversations],
       }
       
     case GET_CONVERSATIONS:
@@ -131,6 +134,7 @@ const messageReducer = (state = initialState, action) => {
         ...state,
         conversations: [action.payload, ...updatedConversations],
         messages: [],
+        numberOfNewMessage: 0
       };
 
     case SET_CONVERSATION_TO_TOP:
@@ -151,6 +155,7 @@ const messageReducer = (state = initialState, action) => {
         conversations: [...filteredConversation],
         selectedUserToMessage: null,
         messages: [],
+        numberOfNewMessage: 0
       };
 
     case DELETE_ACCOUNT:
@@ -160,6 +165,7 @@ const messageReducer = (state = initialState, action) => {
         conversations: [],
         selectedUserToMessage: null,
         messages: [],
+        numberOfNewMessage: 0
       };
 
     case REMOVE_MESSAGE_FOR_SENDER:

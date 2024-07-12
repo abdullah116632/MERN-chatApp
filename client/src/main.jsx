@@ -8,6 +8,7 @@ import { thunk } from "redux-thunk";
 import rootReducer from "./reducers/index.js";
 import { BrowserRouter } from "react-router-dom";
 import { SocketContextProvider } from "./context/SocketContext.jsx";
+import StyleContextProvider from "./context/StyleContext.jsx";
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <BrowserRouter>
         <SocketContextProvider>
+          <StyleContextProvider>
           <App />
+          </StyleContextProvider>
         </SocketContextProvider>
       </BrowserRouter>
     </Provider>

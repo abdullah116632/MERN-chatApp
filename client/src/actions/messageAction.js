@@ -115,14 +115,13 @@ export const getMessage = (selectedUserId) => async (dispatch) => {
       dispatch({ type: GET_MESSAGES, payload: reverSeMessages });
     }
   } catch (error) {
-    console.log(error);
     axiosErrorHandiling(error);
   }
 };
 
-export const getMoreMessages = (selectedUserId, page) => async (dispatch) => {
+export const getMoreMessages = (selectedUserId, page, numberOfNewMessage) => async (dispatch) => {
   try {
-    const { data } = await fetchMessages(selectedUserId, page);
+    const { data } = await fetchMessages(selectedUserId, page, numberOfNewMessage);
     if (data.length !== 0) {
       const messages = data.data.messages;
       let reverSeMessages = [];
@@ -173,7 +172,6 @@ export const removeMessageForSenderFromChat =
   (messageId) => async (dispatch) => {
     try {
       const { data } = await removeMessageForSender(messageId);
-      console.log("test");
       dispatch({ type: REMOVE_MESSAGE_FOR_SENDER, payload: data.data.message });
     } catch (error) {
       console.log(error);

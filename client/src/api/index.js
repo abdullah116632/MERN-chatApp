@@ -104,7 +104,6 @@ export const fetchConversations = () =>
 });
 
 export const fetchUsersForSearch = (queryStr) => {
-  console.log(queryStr)
   return (axios.get(`${url}/users/search?query=${queryStr}`, {
     headers: { "Content-Type": "application/json" },
     withCredentials: true,
@@ -137,10 +136,10 @@ export const createFileMessage = (messageData, receiverId) => {
   );
 };
 
-export const fetchMessages = (selectedUserId, page) =>{
+export const fetchMessages = (selectedUserId, page, numberOfNewMessage = 0) =>{
 
   return (
-    axios.get(`${url}/messages/${selectedUserId}?page=${page}&limit=10`, {
+    axios.get(`${url}/messages/${selectedUserId}?page=${page}&limit=150&numberOfNewMessage=${numberOfNewMessage}`, {
       headers: {
         "Content-Type": "application/json",
       },

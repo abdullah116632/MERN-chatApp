@@ -3,6 +3,7 @@ import Message from "./Message";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { getMessage, getMoreMessages } from "../../actions/messageAction";
+import { useStyleContext } from "../../context/StyleContext";
 
 
 const Messages = () => {
@@ -12,13 +13,15 @@ const Messages = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.sliceA.selectedUserToMessage)
   const messages = useSelector((state) => state.sliceA.messages)
+  const numberOfNewMessage = useSelector((state) => state.sliceA.numberOfNewMessage)
+  console.log(numberOfNewMessage)
 
   const messageContainerRef = useRef();
 
   const fetchMoreMessages = useCallback(
-    async (page) => {
+    async (page, numberOfNewMessage) => {
       setLoading(true);
-      const data = await dispatch(getMoreMessages(user._id, page));
+      const data = await dispatch(getMoreMessages(user._id, page, numberOfNewMessage));
       setLoading(false);
 
       if (data?.messages.length === 0) {
@@ -36,7 +39,7 @@ const Messages = () => {
 
   useEffect(() => {
     if (page > 1) {
-      fetchMoreMessages(page);
+      fetchMoreMessages(page, numberOfNewMessage);
     }
   }, [page, fetchMoreMessages]);
 
@@ -61,11 +64,9 @@ const Messages = () => {
     }
   }, [messages]);
 
-  console.log(messages)
-
 
   return (
-    <div className="pl-1 overflow-auto" ref={messageContainerRef}>
+    <div className={`pl-1 overflow-auto`} ref={messageContainerRef}>
       {!loading && messages.length > 0 && messages.map((message, index) => (
         <div key={message._id} >
           <Message message={message} nextMessage={messages[index+1]} />

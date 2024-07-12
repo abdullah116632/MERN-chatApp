@@ -118,11 +118,16 @@ export const sendTextMessage = asyncErrorHandler(async (req, res, next) => {
 export const getMessage = asyncErrorHandler(async (req, res, next) => {
   const { id: friendsId } = req.params;
   const senderId = req.user._id;
-  const { page = 1, limit = 10 } = req.query;
+  const { page = 1, limit = 100, numberOfNewMessage = 0 } = req.query;
+
+  // console.log(numberOfNewMessage)
 
   if (!friendsId || !senderId) {
     return next(new customError(400, "senderId or friendsId is missing"));
   }
+
+  const skip = ((page - 1) * limit) + parseInt(numberOfNewMessage)
+  console.log(skip)
 
   const conversation = await Conversation.findOne({
     participants: { $all: [senderId, friendsId] },
@@ -131,7 +136,7 @@ export const getMessage = asyncErrorHandler(async (req, res, next) => {
     match: { deletedBy: { $ne: senderId } },
     options: {
       sort: { createdAt: -1 },
-      skip: (page - 1) * limit,
+      skip,
       limit: parseInt(limit),
     },
   });
@@ -245,6 +250,17 @@ export const unseenMessageCount = asyncErrorHandler(async (req, res, next) => {
     },
   });
 
+  if(!conversation){
+    return (
+      res.status(200).json({
+        status: "success",
+        data: {
+          unseenMessageCount: 0
+        }
+      })
+    )
+  }
+
   res.status(200).json({
     status: "success",
     data: {
@@ -260,6 +276,15 @@ export const markMessageAsSeen = asyncErrorHandler(async (req, res, next) => {
   const conversation = await Conversation.findOne({
     participants: { $all: [senderId, reciverId] },
   });
+
+  if(!conversation){
+    return (
+      res.status(200).json({
+        status: "success",
+        data: null
+      })
+    )
+  }
 
   await Message.updateMany(
     { _id: { $in: conversation.messages } },

@@ -4,11 +4,15 @@ import { fetchUsersForSearch } from "../../api";
 import SearchResult from "./SearchResult";
 import useDebounce from "../../hooks/useDebounce";
 import { axiosErrorHandiling } from "../../utils/handleError";
+import { useStyleContext } from "../../context/StyleContext";
 
 const SearchInput = ({ setIsSearchOpen }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState(null);
   const popupRef = useRef(null);
+
+  const {isMobile} = useStyleContext()
+
 
   const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
@@ -45,7 +49,7 @@ const SearchInput = ({ setIsSearchOpen }) => {
   }, [debouncedSearchQuery]);
 
   return (
-    <div ref={popupRef} className="fixed top-1/6 left-1/3 h-4/6 w-1/4 flex flex-col bg-gray-600 shadow-lg p-4 rounded-lg z-50">
+    <div ref={popupRef} className={`fixed ${isMobile ? " left-18 h-[60%] w-[70%]" : "h-4/6 w-1/4 left-1/3 top-1/6"} flex flex-col bg-gray-600 shadow-lg p-4 rounded-lg z-50`}>
       <div className="flex items-end">
         <button
           onClick={(e) => setIsSearchOpen(false)}

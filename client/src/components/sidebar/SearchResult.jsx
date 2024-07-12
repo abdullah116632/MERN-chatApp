@@ -1,12 +1,13 @@
 import { useSocketContext } from "../../context/SocketContext";
 import {useDispatch, useSelector} from "react-redux"
 import { addConversation, selectUser } from "../../actions/messageAction";
+import { useStyleContext } from "../../context/StyleContext";
 
 const SearchREsult = ({ conversation, lastIdx, setIsSearchOpen }) => {
 
   const dispatch = useDispatch()
   const selectedUser = useSelector((state) => state.sliceA.selectedUserToMessage);
-  const conversations = useSelector((state) => state.sliceA.conversations)
+  const {isMobile, setShowMessages} = useStyleContext()
 
   const isSelected = selectedUser?._id === conversation._id;
   const {onlineUsers} = useSocketContext()
@@ -15,7 +16,8 @@ const SearchREsult = ({ conversation, lastIdx, setIsSearchOpen }) => {
 
   const handleClick = () => {
     dispatch(selectUser(conversation));
-    dispatch(addConversation(conversation))
+    dispatch(addConversation(conversation));
+    setShowMessages(true)
     setIsSearchOpen(false)
   };
 

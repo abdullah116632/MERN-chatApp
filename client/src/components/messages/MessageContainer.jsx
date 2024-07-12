@@ -1,23 +1,29 @@
 import Messages from './Messages';
 import MessageInput from './MessageInput';
 import { TiMessages } from "react-icons/ti";
+import { FaArrowLeft } from "react-icons/fa";
 import { useSelector } from 'react-redux';
+import { useStyleContext } from '../../context/StyleContext';
 
 const MessageContainer = () => {
   const authUser = useSelector((state) => state.sliceA.authUser);
   const selectedUser = useSelector((state) => state.sliceA.selectedUserToMessage);
+  const {isMobile, setShowMessages} = useStyleContext()
 
   return (
-    <div className='md:min-w-[450px] xl:min-w-[500px] flex flex-col max-w-14'>
+    <div className={` ${isMobile ? "w-full h-full" : "min-w-[30rem]"} flex flex-col `}>
       {!selectedUser ? <NoChatSelected name={authUser.name} /> : (
         <>
-          <div className='bg-slate-500 w-full px-4 py-2 flex items-center'>
+          <div className={`bg-slate-500 w-full ${!isMobile && "px-4"} py-2 flex items-center`}>
+          {
+            isMobile && <FaArrowLeft className='w-8 text-white hover:cursor-pointer hover:text-slate-200 ' onClick={(e) => setShowMessages(false)}/>
+          }
             <img
               alt='user profile'
-              className='w-10 h-10 rounded-full object-cover' // Ensuring the image is square, fully rounded, and covers the area
+              className='w-10 h-10 rounded-full object-cover' 
               src={selectedUser.profilePic}
             />
-            <div className='ml-2 mt-1 pb-2'>
+            <div className={`ml-2 mt-1 pb-2`}>
               <span className='text-gray-900 text-xl font-bold'> {selectedUser.name}</span>
             </div>
           </div>
@@ -25,6 +31,7 @@ const MessageContainer = () => {
           <Messages />
 
           <MessageInput />
+          
         </>
       )}
     </div>

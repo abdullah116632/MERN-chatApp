@@ -3,13 +3,15 @@ import AuthUserProfile from './AuthUserProfile';
 import { FaSearch } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import { GiHamburgerMenu } from "react-icons/gi";
+import { useStyleContext } from '../../context/StyleContext';
 
 
 const Sidebar = ({setIsSearchOpen, setIsSettingOpen, setIsMenuOpen}) => {
 
+const {isMobile} = useStyleContext()
 
   return (
-    <div className='border-r border-slate-500 p-4 flex flex-col min-w-28 relative z-10'>
+    <div className={`border-r ${isMobile && "w-full"} border-slate-500 p-4 flex flex-col md:min-w-28 relative z-10`}>
       <div className='flex'>
       <AuthUserProfile />
       <button onClick={(e) => setIsSearchOpen(true)} className="btn btn-circle bg-sky-500 text-white ml-auto">

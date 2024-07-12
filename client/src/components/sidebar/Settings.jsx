@@ -4,11 +4,13 @@ import { RiLockPasswordFill } from "react-icons/ri";
 import { AiOutlineUserDelete } from "react-icons/ai";
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useStyleContext } from "../../context/StyleContext";
 
 
 const Settings = ({ setIsSettingOpen }) => {
 
   const popupRef = useRef(null);
+  const {isMobile} = useStyleContext()
 
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -25,7 +27,7 @@ const Settings = ({ setIsSettingOpen }) => {
 
   return (
   <>
-    <div ref={popupRef} className="fixed h-64 w-52 bg-slate-800 top-96 left-[28.5%] rounded-md">
+    <div ref={popupRef} className={`fixed h-64 w-52 bg-slate-800 ${isMobile ? " bottom-8 left-20" : " top-96 left-[28.5%]"} rounded-md`}>
       <div className="flex justify-end">
         <ImCross
           className="cursor-pointer hover:text-red-500 mt-2 mr-2 text-sm"
