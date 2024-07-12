@@ -2,7 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import rateLimit from "express-rate-limit"
+// import rateLimit from "express-rate-limit"
 import helmet from "helmet"
 import sanitize from "express-mongo-sanitize"
 import xss from "xss-clean";
@@ -20,22 +20,27 @@ import goupMessageRoutes from "./routes/groupMessageRoues.js";
 
 dotenv.config()
 
-let limiter = rateLimit({
-  max: 100,
-  windowMs: 20 * 60 * 1000,
-  message: "We have receive too many request from this IP . Please try after one hour",
-  headers: true,
-  skipFailedRequests: true 
-});
+// let limiter = rateLimit({
+//   max: 100,
+//   windowMs: 20 * 60 * 1000,
+//   message: "We have receive too many request from this IP . Please try after one hour",
+//   headers: true,
+//   skipFailedRequests: true 
+// });
 
+// {
+//   origin: 'http://localhost:3000',
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+//   credentials: true,
+// }
 
 app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
-  }));
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  credentials: true,
+}));
 app.use(helmet())
-app.use("/api/auth", limiter)
+// app.use("/api/auth", limiter)
 app.use(express.json());
 app.use(sanitize())
 app.use(xss())
@@ -50,7 +55,7 @@ app.use("/api/users", userRoutes)
 
 
 app.all("*", (req, res, next) => {
-  const err = new customError(404, `Cant find the rul ${req.originalUrl} on the server`)
+  const err = new customError(404, `Cant find the url ${req.originalUrl} on the server`)
   next(err)
 })
 

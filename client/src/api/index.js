@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const url = "http://localhost:8000/api";
+// const url = "http://localhost:8000/api";
+const url ="https://abdullah-chatapp.onrender.com/api"
 
 export const signupUser = (inputs) => {
-  // const {name, email, password, confirmPassword, gender} = inputs;
-  console.log(inputs);
+
   return axios.post(`${url}/auth/signup`, inputs, {
     headers: {
       "Content-Type": "application/json",
