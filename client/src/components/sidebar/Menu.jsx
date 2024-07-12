@@ -10,7 +10,6 @@ const Menu = ({setIsMenuOpen}) => {
   const popupRef = useRef(null);
   const {isMobile} = useStyleContext()
   const [isInfoOpen, setIsInfoOpen] = useState(false)
-  console.log(isInfoOpen)
 
 
   const handleClickOutside = (event) => {

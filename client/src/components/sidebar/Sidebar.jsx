@@ -22,7 +22,7 @@ const {isMobile} = useStyleContext()
       
       <Conversations />
       <div className='mt-auto flex'>
-      <IoSettingsSharp className='w-6 h-6 text-white cursore-pointer' onClick={(e) => setIsSettingOpen(true)} />
+      <IoSettingsSharp className='w-6 h-6 text-white cursor-pointer' onClick={(e) => setIsSettingOpen(true)} />
       <GiHamburgerMenu className='w-6 h-6 text-white cursor-pointer ml-10' onClick={(e) => setIsMenuOpen(true)}/>
       </div>
     </div>
