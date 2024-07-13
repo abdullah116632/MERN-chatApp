@@ -115,7 +115,7 @@ export const updateMe = asyncErrorHandler(async (req, res, next) => {
     const user = await User.findOne({_id: req.user.id})
     await deleteImageFromCloudinary(user.profilePic)
 
-    
+    console.log(req.file.path)
 
     const response = await cloudinary.uploader.upload(req.file.path, {
       resource_type: "auto",

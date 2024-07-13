@@ -27,9 +27,10 @@ const femaleProfilePicPath = path.join(
 );
 
 export const signup = asyncErrorHandler(async (req, res, next) => {
-  console.log("filename: ", __filename)
-  console.log("dirname : ",__dirname)
+  
   const { name, email, password, confirmPassword, gender } = req.body;
+
+  
 
   const profilePicPath =
     gender === "male" ? maleProfilePicPath : femaleProfilePicPath;
