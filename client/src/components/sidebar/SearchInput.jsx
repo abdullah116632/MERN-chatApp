@@ -81,7 +81,7 @@ const SearchInput = ({ setIsSearchOpen }) => {
               />
             ))
           ) : (
-            <p className="text-gray-500">No results found</p>
+            <p className="text-[#F7E7DC]">No results found</p>
           )}
         </div>
       )}

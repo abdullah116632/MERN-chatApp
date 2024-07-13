@@ -51,12 +51,16 @@ export const searchUser = asyncErrorHandler(async (req, res, next) => {
     return res.status(400).json({ message: "Query parameter is required" });
   }
 
-  const users = await User.find({
-    name: { $regex: query, $options: "i" },
-  });
+  let users;
 
-  if (!users) {
-    return next(new CustomError(404, "no user match"));
+  if (query.includes("@")) {
+    users = await User.find({ email: { $regex: query, $options: "i" } });
+  } else {
+    users = await User.find({ name: { $regex: query, $options: "i" } });
+  }
+
+  if (!users || users.length === 0) {
+    return next(new CustomError(404, "No users found matching the query"));
   }
 
   res.status(200).json({
