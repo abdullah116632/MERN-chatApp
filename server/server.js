@@ -31,7 +31,7 @@ let limiter = rateLimit({
 });
 
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true,
 }
@@ -41,6 +41,8 @@ const corsOptions = {
 //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
 //   credentials: true,
 // }));
+
+app.set('trust proxy', true);
 
 app.use(helmet());
 app.use(cors(corsOptions));

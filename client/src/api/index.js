@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const url = "http://localhost:8000/api";
-// const url ="https://abdullah-chatapp.onrender.com/api"
+// const url = "http://localhost:8000/api";
+const url ="https://abdullah-chatapp.onrender.com/api"
 
 export const signupUser = (inputs) => {
 

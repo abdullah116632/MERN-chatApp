@@ -1,3 +1,5 @@
+import path from "path";
+import { fileURLToPath } from "url";
 import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
 import otpGenerator from "otp-generator";
@@ -7,18 +9,35 @@ import customError from "../utils/customErrorClass.js";
 import sendMail from "../utils/sendMail.js";
 import cloudinary from "../db/cloudinary.js";
 
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const maleProfilePicPath = path.join(
+  __dirname,
+  "..",
+  "server",
+  "assets",
+  "maleProfilePic.jpg"
+);
+const femaleProfilePicPath = path.join(
+  __dirname,
+  "..",
+  "server",
+  "assets",
+  "femaleProfilePic.jpg"
+);
+
 export const signup = asyncErrorHandler(async (req, res, next) => {
   const { name, email, password, confirmPassword, gender } = req.body;
 
-  const response = await cloudinary.uploader.upload(
-    gender === "male"
-      ? "server/assets/maleProfilePic.jpg"
-      : "server/assets/femaleProfilePic.jpg",
-    {
-      resource_type: "auto",
-      folder: "chatApp/user-profilePic",
-    }
-  );
+  const profilePicPath =
+    gender === "male" ? maleProfilePicPath : femaleProfilePicPath;
+
+  const response = await cloudinary.uploader.upload(profilePicPath, {
+    resource_type: "auto",
+    folder: "chatApp/user-profilePic",
+  });
 
   const profilePic = response.secure_url;
 
@@ -133,7 +152,7 @@ export const forgetPassword = asyncErrorHandler(async (req, res, next) => {
 });
 
 export const validateOtp = asyncErrorHandler(async (req, res, next) => {
-  const {OTP, email} = req.body;
+  const { OTP, email } = req.body;
 
   if (!OTP) {
     return next(new customError(400, "please send your otp"));
@@ -161,10 +180,10 @@ export const validateOtp = asyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      user
+      user,
     },
   });
-})
+});
 
 export const resetPassword = asyncErrorHandler(async (req, res, next) => {
   const { email, newPassword, confirmPassword } = req.body;
@@ -186,8 +205,8 @@ export const resetPassword = asyncErrorHandler(async (req, res, next) => {
   const user = await User.findOne({
     email,
     isActive: { $ne: false },
-    OTPValidated: {$ne: false},
-  })
+    OTPValidated: { $ne: false },
+  });
 
   if (!user) {
     return next(
