@@ -28,7 +28,7 @@ const Home = () => {
       {isSearchOpen && <SearchInput setIsSearchOpen={setIsSearchOpen} />}
       {isSettingOpen && <Settings setIsSettingOpen={setIsSettingOpen} />}
       {isMenuOpen && <Menu setIsMenuOpen={setIsMenuOpen} />}
-      {(
+      {!isMobile && (
           <div
             className='fixed bottom-0 right-0 m-4 p-4  text-white rounded-full'
           >

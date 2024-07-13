@@ -14,7 +14,6 @@ const Messages = () => {
   const user = useSelector((state) => state.sliceA.selectedUserToMessage)
   const messages = useSelector((state) => state.sliceA.messages)
   const numberOfNewMessage = useSelector((state) => state.sliceA.numberOfNewMessage)
-  console.log(numberOfNewMessage)
 
   const messageContainerRef = useRef();
 

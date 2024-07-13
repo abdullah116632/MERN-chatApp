@@ -16,19 +16,19 @@ const __dirname = path.dirname(__filename);
 const maleProfilePicPath = path.join(
   __dirname,
   "..",
-  "server",
   "assets",
   "maleProfilePic.jpg"
 );
 const femaleProfilePicPath = path.join(
   __dirname,
   "..",
-  "server",
   "assets",
   "femaleProfilePic.jpg"
 );
 
 export const signup = asyncErrorHandler(async (req, res, next) => {
+  console.log("filename: ", __filename)
+  console.log("dirname : ",__dirname)
   const { name, email, password, confirmPassword, gender } = req.body;
 
   const profilePicPath =

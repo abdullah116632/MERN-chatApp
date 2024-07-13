@@ -15,9 +15,9 @@ const Info = ({ setIsInfoOpen }) => {
             rel="noopener noreferrer"
             className="text-blue-500 underline hover:text-blue-700"
           >
-            Abdullah al rafi
+            Abdullah al rafi,
           </a>
-          <span> is working on it.</span>
+          <span>  working on it.</span>
         </p>
         <button 
           onClick={() => setIsInfoOpen(false)} 

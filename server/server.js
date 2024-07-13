@@ -36,13 +36,7 @@ const corsOptions = {
   credentials: true,
 }
 
-// app.use(cors({
-//   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-//   credentials: true,
-// }));
-
-app.set('trust proxy', true);
+// app.set('trust proxy', true);
 
 app.use(helmet());
 app.use(cors(corsOptions));
