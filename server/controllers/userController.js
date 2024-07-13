@@ -54,9 +54,9 @@ export const searchUser = asyncErrorHandler(async (req, res, next) => {
   let users;
 
   if (query.includes("@")) {
-    users = await User.find({ email: { $regex: query, $options: "i" } });
+    users = await User.find({isActive: {$ne: false}, _id: {$ne: req.user._id}, email: { $regex: query, $options: "i" }});
   } else {
-    users = await User.find({ name: { $regex: query, $options: "i" } });
+    users = await User.find({isActive: {$ne: false}, _id: {$ne: req.user._id}, name: { $regex: query, $options: "i" } });
   }
 
   if (!users || users.length === 0) {
